@@ -245,7 +245,9 @@ def countdown(update, context):
         time.sleep(1)
         time_sec -= 1
         if time_sec == 0 or len(global_response[userid]) == 5 or stop[userid] == 'stop':
+            print(stop[userid])
             stop[userid] = None
+            print(stop[userid])
             context.bot.delete_message(chat_id=b.chat_id, message_id=b.message_id)
             context.bot.delete_message(chat_id=b.chat_id, message_id=b.message_id + 1)
             return help(update, context)
