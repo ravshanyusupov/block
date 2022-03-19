@@ -7,11 +7,10 @@ import random
 from ..models import *
 
 
-# bot = Bot(token='5165224717:AAE_8zHzEOMaaMLee4ME7_TbM8q65iR67YI')
-bot = Bot(token='5196621363:AAGe2M7aMHvLKnXi4HCZjDXedQnQ-TyMU60')
+bot = Bot(token='5165224717:AAE_8zHzEOMaaMLee4ME7_TbM8q65iR67YI')
+# bot = Bot(token='5196621363:AAGe2M7aMHvLKnXi4HCZjDXedQnQ-TyMU60')
 
 hostname = f'{settings.HOST}'
-print(f'Working host at: {hostname}')
 bot.set_webhook(hostname)
 
 dispatcher = Dispatcher(bot, None)
@@ -132,6 +131,7 @@ def test_query(update, context):
     data = query.data
     if data == 'a_answer' or data == 'b_answer' or data == 'c_answer' or data == 'd_answer':
         global_response[userid][question_id[userid][global_page[userid] - 1]['id']] = data
+        print(global_response)
         if question_id[userid][-1] == question_id[userid][int(global_page[userid] - 1)]:
             pop = int(global_page[userid] - 1)
             global_page[userid] = pop
@@ -245,6 +245,7 @@ def countdown(update, context):
         time.sleep(1)
         time_sec -= 1
         if time_sec == 0 or len(global_response[userid]) == 5 or stop[userid] == 'stop':
+            stop[userid] = None
             context.bot.delete_message(chat_id=b.chat_id, message_id=b.message_id)
             context.bot.delete_message(chat_id=b.chat_id, message_id=b.message_id + 1)
             return help(update, context)
