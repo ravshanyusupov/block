@@ -7,7 +7,7 @@ import random
 from ..models import *
 
 
-bot = Bot(token='5207306118:AAGTDr-Do1yoOxnfUFyA-juLGrC7ce-YyAE')
+bot = Bot(token='5165224717:AAE_8zHzEOMaaMLee4ME7_TbM8q65iR67YI')
 
 hostname = f'{settings.HOST}/bot'
 print(f'Working host at: {hostname}')
