@@ -7,8 +7,7 @@ import random
 from ..models import *
 
 
-# bot = Bot(token='5165224717:AAE_8zHzEOMaaMLee4ME7_TbM8q65iR67YI')
-bot = Bot(token='5196621363:AAGe2M7aMHvLKnXi4HCZjDXedQnQ-TyMU60')
+bot = Bot(token='5207306118:AAHXicnT0I2Ujx0pFfbn9qd8EXRsgbFITxc')
 
 hostname = f'{settings.HOST}'
 bot.set_webhook(hostname)
@@ -118,7 +117,6 @@ def test_begin(update, context):
     paginator.add_before(
         InlineKeyboardButton(text=question_id[userid][0][selected_random_answer[3]],
                              callback_data=selected_random_answer[3]))
-    # update.message.reply_photo(photo=open(question_id[userid(update)][0]['question_image'], 'rb'))
     update.message.reply_text(
         f"№ {question_id[userid][0]['nomer']}\n{question_id[userid][0]['question']}",
         reply_markup=paginator.markup,
@@ -190,7 +188,6 @@ def test_query(update, context):
                                      callback_data=selected_random_answer[3]))
             paginator.add_after(
                 InlineKeyboardButton(text='🛑 Testni yakunlash 🛑', callback_data='stop'))
-            # update.message.reply_photo(photo=open(question_id[userid(update)][response]['question_image'], 'rb'))
             query.edit_message_text(
                 text=f"№ {question_id[userid][response]['nomer']}\n{question_id[userid][response]['question']}",
                 reply_markup=paginator.markup,
@@ -225,31 +222,11 @@ def test_query(update, context):
                                  callback_data=selected_random_answer[3]))
         paginator.add_after(
             InlineKeyboardButton(text='🛑 Testni yakunlash 🛑', callback_data='stop'))
-        # update.message.reply_photo(photo=open(question_id[userid(update)][response]['question_image'], 'rb'))
         query.edit_message_text(
             text=f"№ {question_id[userid][response]['nomer']}\n{question_id[userid][response]['question']}",
             reply_markup=paginator.markup,
             parse_mode='Markdown'
         )
-
-
-# def countdown(update, context):
-#     userid = update.effective_user.id
-#     time_sec = 19
-#     b = update.message.reply_text(text="00:20")
-#     test_begin(update, context)
-#     for x in range(time_sec):
-#         mins, secs = divmod(time_sec, 60)
-#         timeformat = '{:02d}:{:02d}'.format(mins, secs)
-#         context.bot.edit_message_text(text=timeformat, message_id=b.message_id,
-#                                       chat_id=update.message.chat_id)
-#         time.sleep(1)
-#         time_sec -= 1
-#         if time_sec == 0 or len(global_response[userid]) == 5 or stop[userid] == 'stop':
-#             stop[userid] = None
-#             context.bot.delete_message(chat_id=b.chat_id, message_id=b.message_id)
-#             context.bot.delete_message(chat_id=b.chat_id, message_id=b.message_id + 1)
-#             return help(update, context)
 
 
 def help(update, context):
@@ -306,7 +283,6 @@ dispatcher.add_handler(MessageHandler(Filters.text, middle_handler))
 dispatcher.add_handler(CommandHandler('test_begin', test_begin))
 
 dispatcher.add_handler(CallbackQueryHandler(test_query))
-# dispatcher.add_handler(CommandHandler('countdown', countdown))
 
 dispatcher.add_handler(CommandHandler('help', help))
 dispatcher.add_handler(CallbackQueryHandler(error))
