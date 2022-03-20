@@ -131,7 +131,6 @@ def test_query(update, context):
     data = query.data
     if data == 'a_answer' or data == 'b_answer' or data == 'c_answer' or data == 'd_answer':
         global_response[userid][question_id[userid][global_page[userid] - 1]['id']] = data
-        print(global_response)
         if question_id[userid][-1] == question_id[userid][int(global_page[userid] - 1)]:
             pop = int(global_page[userid] - 1)
             global_page[userid] = pop
@@ -143,27 +142,28 @@ def test_query(update, context):
             response = pop - 1
             random_answer = ['a_answer', 'b_answer', 'c_answer', 'd_answer']
             selected_random_answer = random.sample(random_answer, 4)
-
-            paginator.add_before(
-                InlineKeyboardButton(text=question_id[userid][response][selected_random_answer[0]],
-                                     callback_data=selected_random_answer[0]))
-            paginator.add_before(
-                InlineKeyboardButton(text=question_id[userid][response][selected_random_answer[1]],
-                                     callback_data=selected_random_answer[1]))
-            paginator.add_before(
-                InlineKeyboardButton(text=question_id[userid][response][selected_random_answer[2]],
-                                     callback_data=selected_random_answer[2]))
-            paginator.add_before(
-                InlineKeyboardButton(text=question_id[userid][response][selected_random_answer[3]],
-                                     callback_data=selected_random_answer[3]))
-            paginator.add_after(
-                InlineKeyboardButton(text='🛑 Testni yakunlash 🛑', callback_data='stop'))
-            # update.message.reply_photo(photo=open(question_id[userid(update)][response]['question_image'], 'rb'))
-            query.edit_message_text(
-                text=f"№ {question_id[userid][response]['nomer']}\n{question_id[userid][response]['question']}",
-                reply_markup=paginator.markup,
-                parse_mode='Markdown'
+            if len(global_response[userid]) < 5:
+                paginator.add_before(
+                    InlineKeyboardButton(text=question_id[userid][response][selected_random_answer[0]],
+                                         callback_data=selected_random_answer[0]))
+                paginator.add_before(
+                    InlineKeyboardButton(text=question_id[userid][response][selected_random_answer[1]],
+                                         callback_data=selected_random_answer[1]))
+                paginator.add_before(
+                    InlineKeyboardButton(text=question_id[userid][response][selected_random_answer[2]],
+                                         callback_data=selected_random_answer[2]))
+                paginator.add_before(
+                    InlineKeyboardButton(text=question_id[userid][response][selected_random_answer[3]],
+                                         callback_data=selected_random_answer[3]))
+                paginator.add_after(
+                    InlineKeyboardButton(text='🛑 Testni yakunlash 🛑', callback_data='stop'))
+                query.edit_message_text(
+                    text=f"№ {question_id[userid][response]['nomer']}\n{question_id[userid][response]['question']}",
+                    reply_markup=paginator.markup,
+                    parse_mode='Markdown'
             )
+            elif len(global_response[userid]) == 5:
+                help(update, context)
         else:
             page_num = int(global_page[userid])
             question_id[userid].pop(page_num - 1)
@@ -195,11 +195,10 @@ def test_query(update, context):
                 reply_markup=paginator.markup,
                 parse_mode='Markdown'
             )
-    # elif data == 'stop':
-        # stop[userid] = 'stop'
-        # return help(update, context)
+    elif data == 'stop':
+        help(update, context)
     elif data == 'Ha':
-        return error(update, context)
+        error(update, context)
     else:
         int_data = int(data)
         global_page[userid] = int_data
@@ -233,12 +232,6 @@ def test_query(update, context):
         )
 
 
-def stop1(update, context):
-    query = update.callback_query.data
-    if query == 'stop':
-        return help(update, context)
-
-
 def countdown(update, context):
     userid = update.effective_user.id
     time_sec = 19
@@ -252,9 +245,7 @@ def countdown(update, context):
         time.sleep(1)
         time_sec -= 1
         if time_sec == 0 or len(global_response[userid]) == 5 or stop[userid] == 'stop':
-            print(stop[userid])
             stop[userid] = None
-            print(stop[userid])
             context.bot.delete_message(chat_id=b.chat_id, message_id=b.message_id)
             context.bot.delete_message(chat_id=b.chat_id, message_id=b.message_id + 1)
             return help(update, context)
@@ -271,7 +262,7 @@ def help(update, context):
     keyboard = [
                    InlineKeyboardButton(text='❌ Xatolarni ko\'rish ❌', callback_data='Ha'),
                ],
-    update.message.reply_text(f'Test Yakunlandi\n\nTo`g`ri javoblar: {summa} ta\n'
+    update.callback_query.message.edit_text(f'Test Yakunlandi\n\nTo`g`ri javoblar: {summa} ta\n'
                               f'Noto`g\'ri javoblar: {len(global_response[userid]) - summa} ta\n'
                               f'Javobsiz testlar: {len(question_id[userid])} ta',
                               reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard))
@@ -314,7 +305,6 @@ dispatcher.add_handler(MessageHandler(Filters.text, middle_handler))
 dispatcher.add_handler(CommandHandler('test_begin', test_begin))
 
 dispatcher.add_handler(CallbackQueryHandler(test_query))
-dispatcher.add_handler(CallbackQueryHandler(stop1))
 dispatcher.add_handler(CommandHandler('countdown', countdown))
 
 dispatcher.add_handler(CommandHandler('help', help))
