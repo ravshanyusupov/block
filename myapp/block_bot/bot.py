@@ -195,9 +195,9 @@ def test_query(update, context):
                 reply_markup=paginator.markup,
                 parse_mode='Markdown'
             )
-    elif data == 'stop':
+    # elif data == 'stop':
         # stop[userid] = 'stop'
-        return help(update, context)
+        # return help(update, context)
     elif data == 'Ha':
         return error(update, context)
     else:
@@ -231,6 +231,12 @@ def test_query(update, context):
             reply_markup=paginator.markup,
             parse_mode='Markdown'
         )
+
+
+def stop1(update, context):
+    query = update.callback_query.data
+    if query == 'stop':
+        return help(update, context)
 
 
 def countdown(update, context):
@@ -308,6 +314,7 @@ dispatcher.add_handler(MessageHandler(Filters.text, middle_handler))
 dispatcher.add_handler(CommandHandler('test_begin', test_begin))
 
 dispatcher.add_handler(CallbackQueryHandler(test_query))
+dispatcher.add_handler(CallbackQueryHandler(stop1))
 dispatcher.add_handler(CommandHandler('countdown', countdown))
 
 dispatcher.add_handler(CommandHandler('help', help))
