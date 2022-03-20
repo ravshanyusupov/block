@@ -17,7 +17,6 @@ dispatcher = Dispatcher(bot, None)
 global_response = {}
 global_page = {}
 question_id = {}
-stop = {}
 test_name = {}
 
 
@@ -42,6 +41,8 @@ def test(update, context):
 def begin(update, context):
     userid = update.effective_user.id
     course = update.message.text
+    question_id[userid] = None
+    test_name[userid] = None
     if course == 'Kimyo':
         random_base = [i for i in Kimyo.objects.all().values()]
         question_id[userid] = (random.sample(random_base, 5))
@@ -96,9 +97,8 @@ def middle_handler(update, context):
 
 def test_begin(update, context):
     userid = update.effective_user.id
-    global_response[userid] = {}
+    global_response[userid] = None
     global_page[userid] = 1
-    stop[userid] = None
     paginator = InlineKeyboardPaginator(
         len(question_id[userid]),
     )
@@ -232,23 +232,23 @@ def test_query(update, context):
         )
 
 
-def countdown(update, context):
-    userid = update.effective_user.id
-    time_sec = 19
-    b = update.message.reply_text(text="00:20")
-    test_begin(update, context)
-    for x in range(time_sec):
-        mins, secs = divmod(time_sec, 60)
-        timeformat = '{:02d}:{:02d}'.format(mins, secs)
-        context.bot.edit_message_text(text=timeformat, message_id=b.message_id,
-                                      chat_id=update.message.chat_id)
-        time.sleep(1)
-        time_sec -= 1
-        if time_sec == 0 or len(global_response[userid]) == 5 or stop[userid] == 'stop':
-            stop[userid] = None
-            context.bot.delete_message(chat_id=b.chat_id, message_id=b.message_id)
-            context.bot.delete_message(chat_id=b.chat_id, message_id=b.message_id + 1)
-            return help(update, context)
+# def countdown(update, context):
+#     userid = update.effective_user.id
+#     time_sec = 19
+#     b = update.message.reply_text(text="00:20")
+#     test_begin(update, context)
+#     for x in range(time_sec):
+#         mins, secs = divmod(time_sec, 60)
+#         timeformat = '{:02d}:{:02d}'.format(mins, secs)
+#         context.bot.edit_message_text(text=timeformat, message_id=b.message_id,
+#                                       chat_id=update.message.chat_id)
+#         time.sleep(1)
+#         time_sec -= 1
+#         if time_sec == 0 or len(global_response[userid]) == 5 or stop[userid] == 'stop':
+#             stop[userid] = None
+#             context.bot.delete_message(chat_id=b.chat_id, message_id=b.message_id)
+#             context.bot.delete_message(chat_id=b.chat_id, message_id=b.message_id + 1)
+#             return help(update, context)
 
 
 def help(update, context):
@@ -287,7 +287,7 @@ def error(update, context):
                     sav = Kimyo.objects.get(id=kalit)
                     query.message.reply_text(
                         f"{sav.question}\n) {sav.a_answer}✅\n) {sav.b_answer}\n) {sav.c_answer}\n) {sav.d_answer}❌")
-    global_response[userid] = {}
+    global_response[userid] = None
 
 
 def contact(update, context):
@@ -305,7 +305,7 @@ dispatcher.add_handler(MessageHandler(Filters.text, middle_handler))
 dispatcher.add_handler(CommandHandler('test_begin', test_begin))
 
 dispatcher.add_handler(CallbackQueryHandler(test_query))
-dispatcher.add_handler(CommandHandler('countdown', countdown))
+# dispatcher.add_handler(CommandHandler('countdown', countdown))
 
 dispatcher.add_handler(CommandHandler('help', help))
 dispatcher.add_handler(CallbackQueryHandler(error))
