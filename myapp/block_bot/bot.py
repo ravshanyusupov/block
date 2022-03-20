@@ -87,7 +87,7 @@ def middle_handler(update, context):
     if course == 'Testni boshlash' or course == 'Orqaga':
         if course == 'Testni boshlash':
             Users.objects.create(username=update.effective_user.username, test_name=test_name[userid])
-            return countdown(update, context)
+            return test_begin(update, context)
         elif course == 'Orqaga':
             return test(update, context)
     else:
@@ -196,9 +196,10 @@ def test_query(update, context):
                 parse_mode='Markdown'
             )
     elif data == 'stop':
-        stop[userid] = 'stop'
+        # stop[userid] = 'stop'
+        return help(update, context)
     elif data == 'Ha':
-        error(update, context)
+        return error(update, context)
     else:
         int_data = int(data)
         global_page[userid] = int_data
