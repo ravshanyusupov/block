@@ -27,6 +27,9 @@ def start(update, context):
 
 
 def test(update, context):
+    userid = update.effective_user.id
+    question_id[userid] = {}
+    test_name[userid] = {}
     keyboard = [
         [KeyboardButton('Kimyo',),
          KeyboardButton('Bioloyiya')],
@@ -41,8 +44,6 @@ def test(update, context):
 def begin(update, context):
     userid = update.effective_user.id
     course = update.message.text
-    question_id[userid] = None
-    test_name[userid] = None
     if course == 'Kimyo':
         random_base = [i for i in Kimyo.objects.all().values()]
         question_id[userid] = (random.sample(random_base, 5))
@@ -85,6 +86,8 @@ def begin(update, context):
 def middle_handler(update, context):
     userid = update.effective_user.id
     course = update.message.text
+    global_response[userid] = {}
+    global_page[userid] = 1
     if course == 'Testni boshlash' or course == 'Orqaga':
         if course == 'Testni boshlash':
             Users.objects.create(username=update.effective_user.username, test_name=test_name[userid])
@@ -97,8 +100,6 @@ def middle_handler(update, context):
 
 def test_begin(update, context):
     userid = update.effective_user.id
-    global_response[userid] = None
-    global_page[userid] = 1
     paginator = InlineKeyboardPaginator(
         len(question_id[userid]),
     )
